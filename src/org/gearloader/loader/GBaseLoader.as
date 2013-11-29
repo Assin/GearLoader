@@ -1,4 +1,4 @@
-package org.gearloader.loader{
+﻿package org.gearloader.loader{
 	
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
