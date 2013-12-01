@@ -17,13 +17,30 @@
 		protected var _currentFailTimes:int;
 		protected var _bytesLoaded:uint = 0;
 		protected var _bytesTotal:uint = 0;
+		protected var _loaderBytesTotal:uint = 0;
 		private var _url:String;
-		private var _name:String;
+		private var _name:String = "";
 		private var _status:String = GLoaderStatus.NONE;
 		private var _content:*;
 		private var _onComplete:Function;
 		private var _onProgress:Function;
 		private var _onError:Function;
+		
+		/**
+		 * setting this attribute before load start
+		 * if loaderByteTotal not equals 0,then use for the bytesTotal variable on ProgressEvent and CompleteEvent's data verify.
+		 */
+		public function get loaderBytesTotal():uint {
+			return _loaderBytesTotal;
+		}
+		
+		/**
+		 * setting this attribute before load start
+		 * if loaderByteTotal not equals 0,then use for the bytesTotal variable on ProgressEvent and CompleteEvent's data verify.
+		 */
+		public function set loaderBytesTotal(value:uint):void {
+			_loaderBytesTotal = value;
+		}
 		
 		public function GBaseLoader() {
 			init();
@@ -148,27 +165,44 @@
 		}
 		
 		protected function onURLLoaderCompleteHandler(e:Event):void {
-			status = GLoaderStatus.COMPLETE;
-			_content = _urlLoader.data;
-			executeCompleteAfterHandler();
-			status = GLoaderStatus.NONE;
-			
+			if (_loaderBytesTotal == 0 || (_loaderBytesTotal != 0 && _bytesLoaded == _loaderBytesTotal)) {
+				status = GLoaderStatus.COMPLETE;
+				_content = _urlLoader.data;
+				executeCompleteAfterHandler();
+				status = GLoaderStatus.NONE;
+			} else {
+				//bytesLoaded size not equals bytesTotal.
+				//switch to execute error
+				status = GLoaderStatus.ERROR;
+				_currentFailTimes++;
+				trace("[GLoader][DataError] Name:" + _name + " URL:" + _url + " currentFailTimes:" +
+					_currentFailTimes);
+				executeErrorAfterHandler(GLoaderError.DATA_ERROR);
+			}
 		}
 		
 		protected function onURLLoaderProgressHandler(e:ProgressEvent):void {
-			_bytesTotal = e.bytesTotal;
+			if (_loaderBytesTotal == 0) {
+				_bytesTotal = e.bytesTotal;
+			}
 			_bytesLoaded = e.bytesLoaded;
 			executeProgressAfterHandler();
 		}
 		
 		protected function onURLLoaderIOErrorHandler(e:IOErrorEvent):void {
 			status = GLoaderStatus.ERROR;
-			executeIOErrorAfterHandler();
+			_currentFailTimes++;
+			trace("[GLoader][IOError] Name:" + _name + " URL:" + _url + " currentFailTimes:" +
+				_currentFailTimes);
+			executeErrorAfterHandler(GLoaderError.IO_ERROR);
 		}
 		
 		protected function onURLLoaderSecurityErrorHandler(e:SecurityErrorEvent):void {
 			status = GLoaderStatus.ERROR;
-			executeSecurityErrorAfterHandler();
+			_currentFailTimes++;
+			trace("[GLoader][SecurityError] Name:" + _name + " URL:" + _url + " currentFailTimes:" +
+				_currentFailTimes);
+			executeErrorAfterHandler(GLoaderError.SECURITY_ERROR);
 		}
 		
 		protected function executeCompleteAfterHandler():void {
@@ -198,22 +232,9 @@
 			}
 		}
 		
-		protected function executeIOErrorAfterHandler():void {
+		protected function executeErrorAfterHandler(errorType:String):void {
 			var event:GLoaderEvent = new GLoaderEvent(GLoaderEvent.ERROR);
-			event.errorType = GLoaderError.IO_ERROR;
-			event.currentFailTimes = _currentFailTimes;
-			event.url = _url;
-			event.name = _name;
-			event.status = _status;
-			
-			if (onError) {
-				onError(event);
-			}
-		}
-		
-		protected function executeSecurityErrorAfterHandler():void {
-			var event:GLoaderEvent = new GLoaderEvent(GLoaderEvent.ERROR);
-			event.errorType = GLoaderError.SECURITY_ERROR;
+			event.errorType = errorType;
 			event.currentFailTimes = _currentFailTimes;
 			event.url = _url;
 			event.name = _name;
