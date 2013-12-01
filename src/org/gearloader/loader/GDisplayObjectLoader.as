@@ -38,6 +38,7 @@ package org.gearloader.loader {
 		}
 		//on this class "loader" load Complete
 		protected function onLoaderCompleteHandler(e:Event):void {
+			removeLoaderEventListener();
 			content = _loader.contentLoaderInfo.content;
 			executeLoaderCompleteAfterHandler();
 		}

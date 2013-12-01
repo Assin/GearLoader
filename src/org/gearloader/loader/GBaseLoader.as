@@ -165,6 +165,7 @@
 		}
 		
 		protected function onURLLoaderCompleteHandler(e:Event):void {
+			removeURLLoaderEventListener();
 			if (_loaderBytesTotal == 0 || (_loaderBytesTotal != 0 && _bytesLoaded == _loaderBytesTotal)) {
 				status = GLoaderStatus.COMPLETE;
 				_content = _urlLoader.data;
