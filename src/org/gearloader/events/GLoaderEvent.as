@@ -24,6 +24,9 @@ package org.gearloader.events {
 		public var url:String;
 		public var name:String;
 		public var status:String;
+		public var queueTotal:uint;
+		public var queueCurrent:uint;
+		public var progress:Number = 0;
 		
 		public function GLoaderEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
 			super(type, bubbles, cancelable);

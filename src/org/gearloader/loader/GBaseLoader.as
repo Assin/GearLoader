@@ -207,9 +207,6 @@
 				_loadTime = getTimer() - _startLoadStamp;
 				executeCompleteAfterHandler();
 				status = GLoaderStatus.NONE;
-				if(_autoDispose){
-					dispose();
-				}
 			} else {
 				//bytesLoaded size not equals bytesTotal.
 				//switch to execute error
@@ -279,6 +276,9 @@
 					callBack(event);
 				}
 			}
+			if(_autoDispose){
+				dispose();
+			}
 		}
 		
 		protected function executeProgressAfterHandler():void {
@@ -289,6 +289,7 @@
 			event.url = _url;
 			event.name = _name;
 			event.status = _status;
+			event.progress = _bytesLoaded / _byteTotal;
 			
 			for each(var callBack:Function in _onProgressArray){
 				if(callBack){
@@ -318,9 +319,9 @@
 			_urlLoader = null;
 			_urlRequest = null;
 			_content = null;
-			_onComplete = null;
-			_onProgress = null;
-			_onError = null;
+			_onCompleteArray = null;
+			_onProgressArray = null;
+			_onErrorArray = null;
 		}
 	}
 }

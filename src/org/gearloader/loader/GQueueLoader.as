@@ -3,15 +3,24 @@
 
 	public class GQueueLoader{
 		public var maxConnection:uint = 8;
+		protected var _name:String = "";
 		protected var _isLoading:Boolean;
 		protected var _queue:Array;
 		protected var _currentLoadedCount:uint;
 		protected var _totalLoadCount:uint;
 		protected var _currentBatchLoaderCount:int;
 		protected var _currentBatchLoadCompleteCount:int;
-		private var _onCompleteArray:Function;
-		private var _onProgressArray:Function;
-		private var _onErrorArray:Function;
+		private var _onCompleteArray:Array;
+		private var _onProgressArray:Array;
+		private var _onErrorArray:Array;
+
+		public function get name():String{
+			return _name;
+		}
+
+		public function set name(value:String):void{
+			_name = value;
+		}
 
 		public function set onError(value:Function):void {
 			if(!value){
@@ -99,6 +108,8 @@
 		//load item complete in queue
 		protected function onLoadItemCompleteHandler(e:GLoaderEvent):void{
 			++_currentBatchLoadCompleteCount;
+			//add this attribute ,must be befor checkCurrentBatchStatus method
+			++_currentLoadedCount;
 			//execute progress handler
 			executeProgressHandler();
 			checkCurrentBatchStatus();
@@ -116,6 +127,7 @@
 			//all loader has been complete in current Batch
 			if(_currentBatchLoadCompleteCount >= _currentBatchLoaderCount){
 				_isLoading = false;
+				_currentLoadedCount = 0;
 				_currentBatchLoaderCount = 0;
 				_currentBatchLoadCompleteCount = 0;
 				//continue load next Batch if they has
@@ -142,6 +154,9 @@
 		protected function executeProgressHandler():void{
 			var event:GLoaderEvent = new GLoaderEvent(GLoaderEvent.PROGRESS);
 			event.name = _name;
+			event.queueTotal = _totalLoadCount;
+			event.queueCurrent = _currentLoadedCount;
+			event.progress = _currentLoadedCount / _totalLoadCount;
 
 			for each(var callBack:Function in _onProgressArray){
 				if(callBack){
