@@ -1,7 +1,6 @@
 package org.gearloader.events {
 	import flash.events.Event;
-	import org.gearloader.loader.GBaseLoader;
-
+	
 	public class GLoaderEvent extends Event {
 		/**
 		 * GLoader load complete

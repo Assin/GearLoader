@@ -36,12 +36,14 @@ package org.gearloader.loader {
 			var bytes:ByteArray = content as ByteArray;
 			loadBytes(bytes);
 		}
+		
 		//on this class "loader" load Complete
 		protected function onLoaderCompleteHandler(e:Event):void {
 			removeLoaderEventListener();
 			content = _loader.contentLoaderInfo.content;
 			executeLoaderCompleteAfterHandler();
 		}
+		
 		//on this class "loader" execute handler method after load complete, just execute parent class method "executeCompleteAfterHandler" to callBack onComplete function
 		protected function executeLoaderCompleteAfterHandler():void {
 			super.executeCompleteAfterHandler();

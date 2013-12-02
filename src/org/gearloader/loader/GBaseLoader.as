@@ -34,24 +34,24 @@
 		/**
 		 * get load used time
 		 */
-		public function get loadTime():uint{
+		public function get loadTime():uint {
 			return _loadTime;
 		}
-
+		
 		/**
 		 * setting auto dispose GLoader when load complete
 		 */
-		public function get autoDispose():Boolean{
+		public function get autoDispose():Boolean {
 			return _autoDispose;
 		}
-
+		
 		/**
 		 * setting auto dispose GLoader when load complete
 		 */
-		public function set autoDispose(value:Boolean):void{
+		public function set autoDispose(value:Boolean):void {
 			_autoDispose = value;
 		}
-
+		
 		/**
 		 * setting this attribute before load start
 		 * if loaderByteTotal not equals 0,then use for the bytesTotal variable on ProgressEvent and CompleteEvent's data verify.
@@ -73,30 +73,33 @@
 		}
 		
 		public function set onError(value:Function):void {
-			if(!value){
-				return;
+			if (!value) {
+				return ;
 			}
-			if(!_onErrorArray){
+			
+			if (!_onErrorArray) {
 				_onErrorArray = [];
 			}
 			_onErrorArray.push(value);
 		}
 		
 		public function set onProgress(value:Function):void {
-			if(!value){
-				return;
+			if (!value) {
+				return ;
 			}
-			if(!_onProgressArray){
+			
+			if (!_onProgressArray) {
 				_onProgressArray = [];
 			}
 			_onProgressArray.push(value);
 		}
 		
 		public function set onComplete(value:Function):void {
-			if(!value){
-				return;
+			if (!value) {
+				return ;
 			}
-			if(!_onCompleteArray){
+			
+			if (!_onCompleteArray) {
 				_onCompleteArray = [];
 			}
 			_onCompleteArray.push(value);
@@ -200,6 +203,7 @@
 		
 		protected function onURLLoaderCompleteHandler(e:Event):void {
 			removeURLLoaderEventListener();
+			
 			if (_loaderBytesTotal == 0 || (_loaderBytesTotal != 0 && _bytesLoaded == _loaderBytesTotal)) {
 				// load complete
 				status = GLoaderStatus.COMPLETE;
@@ -232,17 +236,19 @@
 			_currentFailTimes++;
 			trace("[GLoader][IOError] Name:" + _name + " URL:" + _url + " currentFailTimes:" +
 				_currentFailTimes);
-			if(_currentFailTimes >= TOTAL_FAIL_TIMES){
+			
+			if (_currentFailTimes >= TOTAL_FAIL_TIMES) {
 				//if load fail times equals TOTAL_FAIL_TIMES value,then executeError
-				executeErrorAfterHandler(GLoaderError.IO_ERROR);				
-				if(_autoDispose){
+				executeErrorAfterHandler(GLoaderError.IO_ERROR);
+				
+				if (_autoDispose) {
 					dispose();
 				}
-			}else{
+			} else {
 				//if load fail times not less than TOTAL_FAIL_TIMES,then keep load
 				load();
 			}
-
+			
 		}
 		
 		protected function onURLLoaderSecurityErrorHandler(e:SecurityErrorEvent):void {
@@ -251,13 +257,15 @@
 			_currentFailTimes++;
 			trace("[GLoader][SecurityError] Name:" + _name + " URL:" + _url + " currentFailTimes:" +
 				_currentFailTimes);
-			if(_currentFailTimes >= TOTAL_FAIL_TIMES){
+			
+			if (_currentFailTimes >= TOTAL_FAIL_TIMES) {
 				//if load fail times equals TOTAL_FAIL_TIMES value,then executeError
 				executeErrorAfterHandler(GLoaderError.SECURITY_ERROR);
-				if(_autoDispose){
+				
+				if (_autoDispose) {
 					dispose();
 				}
-			}else{
+			} else {
 				//if load fail times not less than TOTAL_FAIL_TIMES,then keep load
 				load();
 			}
@@ -271,12 +279,13 @@
 			event.name = _name;
 			event.status = _status;
 			
-			for each(var callBack:Function in _onCompleteArray){
-				if(callBack){
+			for each (var callBack:Function in _onCompleteArray) {
+				if (callBack) {
 					callBack(event);
 				}
 			}
-			if(_autoDispose){
+			
+			if (_autoDispose) {
 				dispose();
 			}
 		}
@@ -289,10 +298,10 @@
 			event.url = _url;
 			event.name = _name;
 			event.status = _status;
-			event.progress = _bytesLoaded / _byteTotal;
+			event.progress = _bytesLoaded / _bytesTotal;
 			
-			for each(var callBack:Function in _onProgressArray){
-				if(callBack){
+			for each (var callBack:Function in _onProgressArray) {
+				if (callBack) {
 					callBack(event);
 				}
 			}
@@ -306,8 +315,8 @@
 			event.name = _name;
 			event.status = _status;
 			
-			for each(var callBack:Function in _onErrorArray){
-				if(callBack){
+			for each (var callBack:Function in _onErrorArray) {
+				if (callBack) {
 					callBack(event);
 				}
 			}
