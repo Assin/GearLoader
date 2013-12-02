@@ -12,12 +12,16 @@
 	import org.gearloader.events.GLoaderEvent;
 	
 	public class GBaseLoader {
+		protected static const TOTAL_FAIL_TIMES:int = 2;
 		protected var _urlLoader:URLLoader;
 		protected var _urlRequest:URLRequest;
 		protected var _currentFailTimes:int;
 		protected var _bytesLoaded:uint = 0;
 		protected var _bytesTotal:uint = 0;
 		protected var _loaderBytesTotal:uint = 0;
+		protected var _autoDispose:Boolean = true;
+		protected var _loadTime:uint;
+		private var _startLoadStamp:uint;
 		private var _url:String;
 		private var _name:String = "";
 		private var _status:String = GLoaderStatus.NONE;
@@ -26,6 +30,27 @@
 		private var _onProgress:Function;
 		private var _onError:Function;
 		
+		/**
+		 * get load used time
+		 */
+		public function get loadTime():uint{
+			return _loadTime;
+		}
+
+		/**
+		 * setting auto dispose GLoader when load complete
+		 */
+		public function get autoDispose():Boolean{
+			return _autoDispose;
+		}
+
+		/**
+		 * setting auto dispose GLoader when load complete
+		 */
+		public function set autoDispose(value:Boolean):void{
+			_autoDispose = value;
+		}
+
 		/**
 		 * setting this attribute before load start
 		 * if loaderByteTotal not equals 0,then use for the bytesTotal variable on ProgressEvent and CompleteEvent's data verify.
@@ -138,6 +163,8 @@
 			addURLLoaderEventListener();
 			//set the status is GLoaderStatus.PROGRESS
 			status = GLoaderStatus.PROGRESS;
+			_loadTime = 0;
+			_startLoadStamp = getTimer();
 			_urlLoader.load(_urlRequest);
 		}
 		
@@ -167,10 +194,15 @@
 		protected function onURLLoaderCompleteHandler(e:Event):void {
 			removeURLLoaderEventListener();
 			if (_loaderBytesTotal == 0 || (_loaderBytesTotal != 0 && _bytesLoaded == _loaderBytesTotal)) {
+				// load complete
 				status = GLoaderStatus.COMPLETE;
 				_content = _urlLoader.data;
+				_loadTime = getTimer() - _startLoadStamp;
 				executeCompleteAfterHandler();
 				status = GLoaderStatus.NONE;
+				if(_autoDispose){
+					dispose();
+				}
 			} else {
 				//bytesLoaded size not equals bytesTotal.
 				//switch to execute error
@@ -195,7 +227,14 @@
 			_currentFailTimes++;
 			trace("[GLoader][IOError] Name:" + _name + " URL:" + _url + " currentFailTimes:" +
 				_currentFailTimes);
-			executeErrorAfterHandler(GLoaderError.IO_ERROR);
+			if(_currentFailTimes >= TOTAL_FAIL_TIMES){
+				//if load fail times equals TOTAL_FAIL_TIMES value,then executeError
+				executeErrorAfterHandler(GLoaderError.IO_ERROR);				
+			}else{
+				//if load fail times not less than TOTAL_FAIL_TIMES,then keep load
+				load();
+			}
+
 		}
 		
 		protected function onURLLoaderSecurityErrorHandler(e:SecurityErrorEvent):void {
@@ -203,7 +242,13 @@
 			_currentFailTimes++;
 			trace("[GLoader][SecurityError] Name:" + _name + " URL:" + _url + " currentFailTimes:" +
 				_currentFailTimes);
-			executeErrorAfterHandler(GLoaderError.SECURITY_ERROR);
+			if(_currentFailTimes >= TOTAL_FAIL_TIMES){
+				//if load fail times equals TOTAL_FAIL_TIMES value,then executeError
+				executeErrorAfterHandler(GLoaderError.SECURITY_ERROR);
+			}else{
+				//if load fail times not less than TOTAL_FAIL_TIMES,then keep load
+				load();
+			}
 		}
 		
 		protected function executeCompleteAfterHandler():void {
