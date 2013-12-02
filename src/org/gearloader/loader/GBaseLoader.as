@@ -6,6 +6,7 @@
 	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.utils.getTimer;
 	
 	import org.gearloader.data.GLoaderError;
 	import org.gearloader.data.GLoaderStatus;
@@ -26,9 +27,9 @@
 		private var _name:String = "";
 		private var _status:String = GLoaderStatus.NONE;
 		private var _content:*;
-		private var _onComplete:Function;
-		private var _onProgress:Function;
-		private var _onError:Function;
+		private var _onCompleteArray:Array;
+		private var _onProgressArray:Array;
+		private var _onErrorArray:Array;
 		
 		/**
 		 * get load used time
@@ -71,28 +72,34 @@
 			init();
 		}
 		
-		public function get onError():Function {
-			return _onError;
-		}
-		
 		public function set onError(value:Function):void {
-			_onError = value;
-		}
-		
-		public function get onProgress():Function {
-			return _onProgress;
+			if(!value){
+				return;
+			}
+			if(!_onErrorArray){
+				_onErrorArray = [];
+			}
+			_onErrorArray.push(value);
 		}
 		
 		public function set onProgress(value:Function):void {
-			_onProgress = value;
-		}
-		
-		public function get onComplete():Function {
-			return _onComplete;
+			if(!value){
+				return;
+			}
+			if(!_onProgressArray){
+				_onProgressArray = [];
+			}
+			_onProgressArray.push(value);
 		}
 		
 		public function set onComplete(value:Function):void {
-			_onComplete = value;
+			if(!value){
+				return;
+			}
+			if(!_onCompleteArray){
+				_onCompleteArray = [];
+			}
+			_onCompleteArray.push(value);
 		}
 		
 		public function get bytesTotal():uint {
@@ -224,12 +231,16 @@
 		
 		protected function onURLLoaderIOErrorHandler(e:IOErrorEvent):void {
 			status = GLoaderStatus.ERROR;
+			_loadTime = getTimer() - _startLoadStamp;
 			_currentFailTimes++;
 			trace("[GLoader][IOError] Name:" + _name + " URL:" + _url + " currentFailTimes:" +
 				_currentFailTimes);
 			if(_currentFailTimes >= TOTAL_FAIL_TIMES){
 				//if load fail times equals TOTAL_FAIL_TIMES value,then executeError
 				executeErrorAfterHandler(GLoaderError.IO_ERROR);				
+				if(_autoDispose){
+					dispose();
+				}
 			}else{
 				//if load fail times not less than TOTAL_FAIL_TIMES,then keep load
 				load();
@@ -239,12 +250,16 @@
 		
 		protected function onURLLoaderSecurityErrorHandler(e:SecurityErrorEvent):void {
 			status = GLoaderStatus.ERROR;
+			_loadTime = getTimer() - _startLoadStamp;
 			_currentFailTimes++;
 			trace("[GLoader][SecurityError] Name:" + _name + " URL:" + _url + " currentFailTimes:" +
 				_currentFailTimes);
 			if(_currentFailTimes >= TOTAL_FAIL_TIMES){
 				//if load fail times equals TOTAL_FAIL_TIMES value,then executeError
 				executeErrorAfterHandler(GLoaderError.SECURITY_ERROR);
+				if(_autoDispose){
+					dispose();
+				}
 			}else{
 				//if load fail times not less than TOTAL_FAIL_TIMES,then keep load
 				load();
@@ -259,8 +274,10 @@
 			event.name = _name;
 			event.status = _status;
 			
-			if (onComplete) {
-				onComplete(event);
+			for each(var callBack:Function in _onCompleteArray){
+				if(callBack){
+					callBack(event);
+				}
 			}
 		}
 		
@@ -273,8 +290,10 @@
 			event.name = _name;
 			event.status = _status;
 			
-			if (onProgress) {
-				onProgress(event);
+			for each(var callBack:Function in _onProgressArray){
+				if(callBack){
+					callBack(event);
+				}
 			}
 		}
 		
@@ -286,8 +305,10 @@
 			event.name = _name;
 			event.status = _status;
 			
-			if (onError) {
-				onError(event);
+			for each(var callBack:Function in _onErrorArray){
+				if(callBack){
+					callBack(event);
+				}
 			}
 		}
 		
