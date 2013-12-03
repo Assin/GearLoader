@@ -173,11 +173,11 @@
 		}
 		
 		//load item has been progress,every item can trigger this callback handler
-		protected function onLoadItemProgressHandler(e:GLoaderEvent):void{
+		protected function onLoadItemProgressHandler(e:GLoaderEvent):void {
 			//execute progress handler
 			executeProgressHandler();
 		}
-
+		
 		//check current batch load status, if current batch load complete then continue load next batch
 		protected function checkCurrentBatchStatus():void {
 			//all loader has been complete in current Batch
@@ -213,17 +213,18 @@
 			event.queueTotal = _totalLoadCount;
 			event.queueCurrent = _currentLoadedCount;
 			event.rawProgress = _currentLoadedCount / _totalLoadCount;
-
+			
 			//calculate load queue raw progress,from all loading loader progress
 			var totalRawProgress:Number = _totalLoadCount;
 			var loadedRawProgress:Number = 0;
-			if(_loadingLoaderArray){
-				for each(var loader:GBaseLoader in _loadingLoaderArray){
+			
+			if (_loadingLoaderArray) {
+				for each (var loader:GBaseLoader in _loadingLoaderArray) {
 					loadedRawProgress += loader.rawProgress;
 				}
 			}
 			event.progress = (loadedRawProgress + _currentLoadedCount) / totalRawProgress;
-
+			
 			
 			for each (var callBack:Function in _onProgressArray) {
 				if (callBack != null) {

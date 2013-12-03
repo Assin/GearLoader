@@ -105,21 +105,23 @@
 			_onCompleteArray.push(value);
 		}
 		
-		public function get rawProgress():Number{
+		public function get rawProgress():Number {
 			return progress;
 		}
-
-		public function get progress():Number{
+		
+		public function get progress():Number {
 			var p:Number = _bytesLoaded / _bytesTotal;
-			if(p < 0){
+			
+			if (p < 0) {
 				p = 0;
 			}
-			if(p > 1){
+			
+			if (p > 1) {
 				p = 1;
 			}
 			return p;
 		}
-
+		
 		public function get bytesTotal():uint {
 			return _bytesTotal;
 		}
@@ -342,7 +344,7 @@
 		}
 		
 		public function dispose():void {
-			if(_urlLoader){
+			if (_urlLoader) {
 				removeURLLoaderEventListener();
 			}
 			close();
