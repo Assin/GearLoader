@@ -211,15 +211,14 @@
 			event.progress = _currentLoadedCount / _totalLoadCount;
 
 			//calculate load queue raw progress,from all loading loader progress
-			var totalRawProgress:Number = 0;
+			var totalRawProgress:Number = _totalLoadCount;
 			var loadedRawProgress:Number = 0;
 			if(_loadingLoaderArray){
 				for each(var loader:GBaseLoader in _loadingLoaderArray){
-					++totalRawProgress;
 					loadedRawProgress += loader.rawProgress;
 				}
 			}
-			event.rawProgress = loadedRawProgress / totalRawProgress;
+			event.rawProgress = (loadedRawProgress + _currentLoadedCount) / totalRawProgress;
 
 			
 			for each (var callBack:Function in _onProgressArray) {

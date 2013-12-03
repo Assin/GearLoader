@@ -105,6 +105,10 @@
 			_onCompleteArray.push(value);
 		}
 		
+		public function get rawProgress():Number{
+			return progress;
+		}
+
 		public function get progress():Number{
 			var p:Number = _bytesLoaded / _bytesTotal;
 			if(p < 0){
@@ -312,7 +316,7 @@
 			event.status = _status;
 			event.item = this;
 			event.progress = progress;
-			event.rawProgress = progress;
+			event.rawProgress = rawProgress;
 			
 			for each (var callBack:Function in _onProgressArray) {
 				if (callBack) {
