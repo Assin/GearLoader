@@ -1,5 +1,6 @@
 package org.gearloader.events {
 	import flash.events.Event;
+	import org.gearloader.loader.GBaseLoader;
 	
 	public class GLoaderEvent extends Event {
 		/**
@@ -26,6 +27,7 @@ package org.gearloader.events {
 		public var queueTotal:uint;
 		public var queueCurrent:uint;
 		public var progress:Number = 0;
+		public var item:GBaseLoader;
 		
 		public function GLoaderEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
 			super(type, bubbles, cancelable);
