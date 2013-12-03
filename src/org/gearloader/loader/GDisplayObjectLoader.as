@@ -1,5 +1,6 @@
 package org.gearloader.loader {
 	import flash.display.Loader;
+	import flash.display.LoaderContext;
 	import flash.events.Event;
 	import flash.net.URLLoaderDataFormat;
 	import flash.system.LoaderContext;
