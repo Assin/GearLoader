@@ -278,6 +278,7 @@
 			event.url = _url;
 			event.name = _name;
 			event.status = _status;
+			event.item = this;
 			
 			for each (var callBack:Function in _onCompleteArray) {
 				if (callBack) {
@@ -298,6 +299,7 @@
 			event.url = _url;
 			event.name = _name;
 			event.status = _status;
+			event.item = this;
 			event.progress = _bytesLoaded / _bytesTotal;
 			
 			for each (var callBack:Function in _onProgressArray) {
@@ -314,6 +316,7 @@
 			event.url = _url;
 			event.name = _name;
 			event.status = _status;
+			event.item = this;
 			
 			for each (var callBack:Function in _onErrorArray) {
 				if (callBack) {
