@@ -7,12 +7,28 @@ package org.gearloader.loader {
 	
 	public class GDisplayObjectLoader extends GBaseLoader {
 		protected var _loader:Loader;
+		protected var _context:LoaderContext;
 		
 		public function GDisplayObjectLoader() {
 			super();
 			dataFormat = URLLoaderDataFormat.BINARY;
 		}
 		
+		public function get context():LoaderContext{
+			return _context;
+		}
+
+		public function set context(value:LoaderContext){
+			_context = value;
+		}
+
+		public function get contentLoaderInfo():LoaderInfo{
+			if(!_loader){
+				return null;
+			}
+			return _loader.contentLoaderInfo;
+		}
+
 		override protected function init():void {
 			super.init();
 			_loader = new Loader();
@@ -34,7 +50,7 @@ package org.gearloader.loader {
 		//use this class "loader" load parent class content bytes when the parent class URLLoader load complete; 
 		override protected function executeCompleteAfterHandler():void {
 			var bytes:ByteArray = content as ByteArray;
-			loadBytes(bytes);
+			loadBytes(bytes, _context);
 		}
 		
 		//on this class "loader" load Complete
