@@ -216,7 +216,7 @@
 			if(_loadingLoaderArray){
 				for each(var loader:GBaseLoader in _loadingLoaderArray){
 					++totalRawProgress;
-					loadedRawProgress += loader.progress;
+					loadedRawProgress += loader.rawProgress;
 				}
 			}
 			event.rawProgress = loadedRawProgress / totalRawProgress;

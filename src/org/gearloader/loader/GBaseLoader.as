@@ -312,6 +312,7 @@
 			event.status = _status;
 			event.item = this;
 			event.progress = progress;
+			event.rawProgress = progress;
 			
 			for each (var callBack:Function in _onProgressArray) {
 				if (callBack) {
