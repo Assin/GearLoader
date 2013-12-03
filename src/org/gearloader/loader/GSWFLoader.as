@@ -10,7 +10,9 @@ package org.gearloader.loader {
 		
 		override protected function executeLoaderCompleteAfterHandler():void {
 			_movieClip = content as MovieClip;
-			_movieClip.stop();
+			if(_movieClip){
+				_movieClip.stop();
+			}
 			super.executeLoaderCompleteAfterHandler();
 		}
 		
