@@ -19,7 +19,7 @@ package org.gearloader.loader {
 			return _context;
 		}
 
-		public function set context(value:LoaderContext){
+		public function set context(value:LoaderContext):void{
 			_context = value;
 		}
 

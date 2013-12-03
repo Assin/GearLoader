@@ -162,9 +162,14 @@
 		
 		//load item has been error
 		protected function onLoadItemErrorHandler(e:GLoaderEvent):void {
+			//delete complete loader from "_loadingLoaderArray"
+			_loadingLoaderArray.splice(_loadingLoaderArray.indexOf(e.item), 1);
+			//record complete count
+			++_currentBatchLoadCompleteCount;
 			//if load item has been error
 			//execute queue error handler
 			executeErrorHandler();
+			checkCurrentBatchStatus();
 		}
 		
 		//load item has been progress,every item can trigger this callback handler
@@ -196,7 +201,7 @@
 			event.name = _name;
 			
 			for each (var callBack:Function in _onCompleteArray) {
-				if (callBack) {
+				if (callBack != null) {
 					callBack(event);
 				}
 			}
@@ -221,7 +226,7 @@
 
 			
 			for each (var callBack:Function in _onProgressArray) {
-				if (callBack) {
+				if (callBack != null) {
 					callBack(event);
 				}
 			}
@@ -232,7 +237,7 @@
 			event.name = _name;
 			
 			for each (var callBack:Function in _onErrorArray) {
-				if (callBack) {
+				if (callBack != null) {
 					callBack(event);
 				}
 			}

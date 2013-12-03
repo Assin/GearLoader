@@ -296,7 +296,7 @@
 			event.item = this;
 			
 			for each (var callBack:Function in _onCompleteArray) {
-				if (callBack) {
+				if (callBack != null) {
 					callBack(event);
 				}
 			}
@@ -319,7 +319,7 @@
 			event.rawProgress = rawProgress;
 			
 			for each (var callBack:Function in _onProgressArray) {
-				if (callBack) {
+				if (callBack != null) {
 					callBack(event);
 				}
 			}
@@ -335,7 +335,7 @@
 			event.item = this;
 			
 			for each (var callBack:Function in _onErrorArray) {
-				if (callBack) {
+				if (callBack != null) {
 					callBack(event);
 				}
 			}
