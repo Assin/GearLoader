@@ -178,7 +178,6 @@
 			//all loader has been complete in current Batch
 			if (_currentBatchLoadCompleteCount >= _currentBatchLoaderCount) {
 				_isLoading = false;
-				_currentLoadedCount = 0;
 				_currentBatchLoaderCount = 0;
 				_currentBatchLoadCompleteCount = 0;
 				
