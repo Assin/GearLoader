@@ -57,7 +57,7 @@ package org.gearloader.loader {
 		//on this class "loader" load Complete
 		protected function onLoaderCompleteHandler(e:Event):void {
 			removeLoaderEventListener();
-			content = _loader.contentLoaderInfo.content;
+			content = _loader.content;
 			executeLoaderCompleteAfterHandler();
 		}
 		
@@ -69,6 +69,7 @@ package org.gearloader.loader {
 		override public function dispose():void {
 			if(_loader){
 				removeLoaderEventListener();
+				_loader.unloadAndStop();
 			}
 			_loader = null;
 			super.dispose();
