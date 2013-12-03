@@ -27,6 +27,7 @@ package org.gearloader.events {
 		public var queueTotal:uint;
 		public var queueCurrent:uint;
 		public var progress:Number = 0;
+		public var rawProgress:Number = 0;
 		public var item:GBaseLoader;
 		
 		public function GLoaderEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {

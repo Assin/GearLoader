@@ -105,6 +105,17 @@
 			_onCompleteArray.push(value);
 		}
 		
+		public function get progress():Number{
+			var p:Number = _bytesLoaded / _bytesTotal;
+			if(p < 0){
+				p = 0;
+			}
+			if(p > 1){
+				p = 1;
+			}
+			return p;
+		}
+
 		public function get bytesTotal():uint {
 			return _bytesTotal;
 		}
@@ -300,7 +311,7 @@
 			event.name = _name;
 			event.status = _status;
 			event.item = this;
-			event.progress = _bytesLoaded / _bytesTotal;
+			event.progress = progress;
 			
 			for each (var callBack:Function in _onProgressArray) {
 				if (callBack) {

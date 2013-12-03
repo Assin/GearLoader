@@ -16,6 +16,7 @@
 		private var _onCompleteArray:Array;
 		private var _onProgressArray:Array;
 		private var _onErrorArray:Array;
+		private var _loadingLoaderArray:Array;
 		
 		public function get name():String {
 			return _name;
@@ -84,6 +85,7 @@
 		
 		public function GQueueLoader() {
 			_queue = [];
+			_loadingLoaderArray = [];
 		}
 		
 		/**
@@ -126,7 +128,9 @@
 			_currentBatchLoadCompleteCount = 0;
 			
 			while (nextLoaderCount > 0) {
-				loadItem(_queue.shift());
+				var loader:GBaseLoader = _queue.shift();
+				_loadingLoaderArray.push(loader);
+				loadItem(loader);
 				--nextLoaderCount;
 			}
 		}
@@ -141,16 +145,18 @@
 			}
 			loader.onComplete = onLoadItemCompleteHandler;
 			loader.onError = onLoadItemErrorHandler;
+			loader.onProgress = onLoadItemProgressHandler;
 			loader.load();
 		}
 		
 		//load item complete in queue
 		protected function onLoadItemCompleteHandler(e:GLoaderEvent):void {
+			//delete complete loader from "_loadingLoaderArray"
+			_loadingLoaderArray.splice(_loadingLoaderArray.indexOf(e.item), 1);
+			//record complete count
 			++_currentBatchLoadCompleteCount;
-			//add this attribute ,must be befor checkCurrentBatchStatus method
+			//add this attribute ,must be before checkCurrentBatchStatus method
 			++_currentLoadedCount;
-			//execute progress handler
-			executeProgressHandler();
 			checkCurrentBatchStatus();
 		}
 		
@@ -161,6 +167,12 @@
 			executeErrorHandler();
 		}
 		
+		//load item has been progress,every item can trigger this callback handler
+		protected function onLoadItemProgressHandler(e:GLoaderEvent):void{
+			//execute progress handler
+			executeProgressHandler();
+		}
+
 		//check current batch load status, if current batch load complete then continue load next batch
 		protected function checkCurrentBatchStatus():void {
 			//all loader has been complete in current Batch
@@ -197,6 +209,18 @@
 			event.queueTotal = _totalLoadCount;
 			event.queueCurrent = _currentLoadedCount;
 			event.progress = _currentLoadedCount / _totalLoadCount;
+
+			//calculate load queue raw progress,from all loading loader progress
+			var totalRawProgress:Number = 0;
+			var loadedRawProgress:Number = 0;
+			if(_loadingLoaderArray){
+				for each(var loader:GBaseLoader in _loadingLoaderArray){
+					++totalRawProgress;
+					loadedRawProgress += loader.progress;
+				}
+			}
+			event.rawProgress = loadedRawProgress / totalRawProgress;
+
 			
 			for each (var callBack:Function in _onProgressArray) {
 				if (callBack) {
@@ -228,6 +252,7 @@
 			_onCompleteArray = null;
 			_onProgressArray = null;
 			_onErrorArray = null;
+			_loadingLoaderArray = null;
 		}
 	}
 }
