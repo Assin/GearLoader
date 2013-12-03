@@ -207,7 +207,7 @@
 			event.name = _name;
 			event.queueTotal = _totalLoadCount;
 			event.queueCurrent = _currentLoadedCount;
-			event.progress = _currentLoadedCount / _totalLoadCount;
+			event.rawProgress = _currentLoadedCount / _totalLoadCount;
 
 			//calculate load queue raw progress,from all loading loader progress
 			var totalRawProgress:Number = _totalLoadCount;
@@ -217,7 +217,7 @@
 					loadedRawProgress += loader.rawProgress;
 				}
 			}
-			event.rawProgress = (loadedRawProgress + _currentLoadedCount) / totalRawProgress;
+			event.progress = (loadedRawProgress + _currentLoadedCount) / totalRawProgress;
 
 			
 			for each (var callBack:Function in _onProgressArray) {
