@@ -326,7 +326,9 @@
 		}
 		
 		public function dispose():void {
-			removeURLLoaderEventListener();
+			if(_urlLoader){
+				removeURLLoaderEventListener();
+			}
 			close();
 			_urlLoader = null;
 			_urlRequest = null;
