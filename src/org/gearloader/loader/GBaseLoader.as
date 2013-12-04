@@ -73,7 +73,7 @@
 		}
 		
 		public function set onError(value:Function):void {
-			if (!value) {
+			if (value == null) {
 				return ;
 			}
 			
@@ -84,7 +84,7 @@
 		}
 		
 		public function set onProgress(value:Function):void {
-			if (!value) {
+			if (value == null) {
 				return ;
 			}
 			
@@ -95,7 +95,7 @@
 		}
 		
 		public function set onComplete(value:Function):void {
-			if (!value) {
+			if (value == null) {
 				return ;
 			}
 			
