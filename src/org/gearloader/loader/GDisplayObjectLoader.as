@@ -69,7 +69,7 @@ package org.gearloader.loader {
 		override public function dispose():void {
 			if(_loader){
 				removeLoaderEventListener();
-				_loader.unloadAndStop();
+				_loader.unload();
 			}
 			_loader = null;
 			super.dispose();
