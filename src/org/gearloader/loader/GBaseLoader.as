@@ -38,7 +38,7 @@
 		 */		
 		public function get loadRate():int {
 			var rate:int = _bytesLoaded / (getTimer() - _startLoadStamp);
-			return (rate == 0) ? 0 : rate;
+			return (rate <= 0) ? 0 : rate;
 		}
 		
 		/**
