@@ -11,15 +11,16 @@ Examples
 ==========
   Load a bitmap file:
     
-    var loader:GImageLoader = new GImageLoader();
+    var imageLoader:GImageLoader = new GImageLoader();
     //google logo , for test
-    loader.url = "http://www.google.com/images/nav_logo170_hr.png";
-    loader.onProgress = onProgressHandler;
-    loader.onComplete = onCompleteHandler;
-    loader.load();
+    imageLoader.url = "http://www.google.com/images/nav_logo170_hr.png";
+    imageLoader.onProgress = onProgressHandler;
+    imageLoader.onComplete = onCompleteHandler;
+    imageLoader.load();
     
     function onProgressHandler(e:GLoaderEvent):void{
       	trace(e.progress);
+      	trace(e.loadRate);    // download rate
     }
     
     function onCompleteHandler(e:GLoaderEvent):void{
@@ -28,19 +29,39 @@ Examples
     
   Load a xml file:
   
-  	var loader:GImageLoader = new GImageLoader();
-    //google logo , for test
-    loader.url = "http://www.google.com/images/nav_logo170_hr.png";
-    loader.onProgress = onProgressHandler;
-    loader.onComplete = onCompleteHandler;
-    loader.load();
+  	var textLoader:GTextLoader = new GTextLoader();
+    //google news RSS, for test
+    textLoader.url = "http://news.google.com/?output=rss";
+    textLoader.onProgress = onProgressHandler;
+    textLoader.onComplete = onCompleteHandler;
+    textLoader.load();
     
     function onProgressHandler(e:GLoaderEvent):void{
       	trace(e.progress);
+      	trace(e.loadRate);    // download rate
     }
     
     function onCompleteHandler(e:GLoaderEvent):void{
-    	 var bitmapData:BitmapData = GImageLoader(e.item).getBitmapData();
+    	 var xml:XML = new XML(e.content as String);
     }
   
+  Load files by queue:
+  
+    var loaderQueue:GQueueLoader = new GQueueLoader();
+    //use before loader
+    loaderQueue.addLoader(imageLoader);
+    loaderQueue.addLoader(textLoader);
+    loaderQueue.onProgress = onQueueProgressHandler;
+    loaderQueue.onComplete = onQueueCompleteHandler;
+    loaderQueue.load();
+    
+    function onQueueProgressHandler(e:GLoaderEvent):void{
+      trace(e.rawProgress); // queueLoader's loaded file count progress
+      trace(e.progress);    // queueLoader's loaded file bytes progress
+      trace(e.loadRate);    // download rate
+    }
+    
+    function onQueueCompleteHandler(e:GLoaderEvent):void{
+      trace("Queue loaded complete!");
+    }
   
