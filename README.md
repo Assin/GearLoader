@@ -4,7 +4,9 @@ GearLoader
 ActionScript Loader component<br>
   used to load static resouces<br>
   such as image(png,jpg),swf,txt,binaryData<br>
-
+  this project no used static funcitons. need new class to load.
+  Tiny Loader components,flexible in your project.
+  
 
 
 Examples
