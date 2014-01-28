@@ -217,12 +217,20 @@
 			//calculate load queue raw progress,from all loading loader progress
 			var totalRawProgress:Number = _totalLoadCount;
 			var loadedRawProgress:Number = 0;
-			
+			var totalRate:int = 0;
+			var totalRateCount:int = 0;
 			if (_loadingLoaderArray) {
 				for each (var loader:GBaseLoader in _loadingLoaderArray) {
 					loadedRawProgress += loader.rawProgress;
+					var loaderRate:int = loader.loadRate;
+					if(loaderRate != 0)
+					{
+						totalRate += loaderRate;
+						totalRateCount++;
+					}
 				}
 			}
+			event.loadRate = totalRate / totalRateCount;
 			event.progress = (loadedRawProgress + _currentLoadedCount) / totalRawProgress;
 			
 			

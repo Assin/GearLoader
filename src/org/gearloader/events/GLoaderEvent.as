@@ -18,6 +18,8 @@ package org.gearloader.events {
 		
 		public var bytesLoaded:uint;
 		public var bytesTotal:uint;
+		public var loadRate:int;
+		public var loadTime:uint;
 		public var errorType:String = "";
 		public var content:*;
 		public var currentFailTimes:int;

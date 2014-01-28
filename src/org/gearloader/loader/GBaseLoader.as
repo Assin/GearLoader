@@ -32,6 +32,16 @@
 		private var _onErrorArray:Array;
 		
 		/**
+		 * get download rate ,kb/ms
+		 * @return 
+		 * 
+		 */		
+		public function get loadRate():int {
+			var rate:int = _bytesLoaded / (getTimer() - _startLoadStamp);
+			return (rate == 0) ? 0 : rate;
+		}
+		
+		/**
 		 * get load used time
 		 */
 		public function get loadTime():uint {
@@ -243,6 +253,7 @@
 			if (_loaderBytesTotal == 0) {
 				_bytesTotal = e.bytesTotal;
 			}
+			_loadTime = getTimer() - _startLoadStamp;
 			_bytesLoaded = e.bytesLoaded;
 			executeProgressAfterHandler();
 		}
@@ -292,6 +303,7 @@
 			var event:GLoaderEvent = new GLoaderEvent(GLoaderEvent.COMPLETE);
 			event.content = _content;
 			event.currentFailTimes = _currentFailTimes;
+			event.loadTime = _loadTime;
 			event.url = _url;
 			event.name = _name;
 			event.status = _status;
@@ -311,7 +323,9 @@
 		protected function executeProgressAfterHandler():void {
 			var event:GLoaderEvent = new GLoaderEvent(GLoaderEvent.PROGRESS);
 			event.bytesLoaded = _bytesLoaded;
-			event.bytesTotal = _bytesTotal;
+			event.bytesTotal = (_loaderBytesTotal == 0) ? _bytesTotal : _loaderBytesTotal;
+			event.loadRate = loadRate;
+			event.loadTime = _loadTime;
 			event.currentFailTimes = _currentFailTimes;
 			event.url = _url;
 			event.name = _name;
@@ -329,6 +343,7 @@
 		
 		protected function executeErrorAfterHandler(errorType:String):void {
 			var event:GLoaderEvent = new GLoaderEvent(GLoaderEvent.ERROR);
+			event.loadTime = _loadTime;
 			event.errorType = errorType;
 			event.currentFailTimes = _currentFailTimes;
 			event.url = _url;
