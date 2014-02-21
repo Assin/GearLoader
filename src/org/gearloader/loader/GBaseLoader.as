@@ -30,7 +30,7 @@
 		private var _onCompleteArray:Array;
 		private var _onProgressArray:Array;
 		private var _onErrorArray:Array;
-		
+		public var data:*;
 		/**
 		 * get download rate ,kb/ms
 		 * @return 

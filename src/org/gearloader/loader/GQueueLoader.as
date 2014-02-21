@@ -199,6 +199,9 @@
 		protected function executeCompleteHandler():void {
 			var event:GLoaderEvent = new GLoaderEvent(GLoaderEvent.COMPLETE);
 			event.name = _name;
+			event.queueTotal = _totalLoadCount;
+			event.queueCurrent = _currentLoadedCount;
+			event.rawProgress = _currentLoadedCount / _totalLoadCount;
 			
 			for each (var callBack:Function in _onCompleteArray) {
 				if (callBack != null) {
